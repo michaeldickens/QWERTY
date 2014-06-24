@@ -73,8 +73,10 @@
 (defvar *current-keylayout-keys* *qwerty-keys*)
 
 (defvar *key-bind-prefixes* 
-  (list "C-c" "C-h" "C-x" "M-g" "M-s" "C-c ," "C-c p"
-        "C-c C-x") ; temporary fix; see TODO below
+  (list "C-c" "C-h" "C-x" "M-g" "M-s" "C-c ," 
+        "C-c C-x"
+        ;; "C-c p" "C-c ."
+        ) ; temporary fix; see TODO above
   "Prefixes for possible key sequences ending in a character.")
 
 (defun command-for-char (prefix char)
@@ -114,10 +116,6 @@
   a command followed by a character. This function makes it so that
   `C-x b` requires typing the QWERTY `b` key instead of the new `b`
   key. I find that this works better for my muscle memory.
-
-TODO: Modify this so that instead of just looking at
-*key-bind-prefixes*, it makes a list of all bound keys and fixes
-them all.
 
 WARNING: This only works if old-kbd is QWERTY.
 
@@ -207,6 +205,13 @@ layout."
    ",fhdkjcul.[]oantgmseri/qxbpzyw'v;<FHDKJCUL>{}OANTGMSERI?QXBPZYW\"V:-=_+"
    *qwerty-keys*
    t))
+
+(defun switch-keylayout ()
+  "If the current keyboard layout is QWERTY, switch to MTGAP 2.0, and vice versa."
+  (interactive)
+  (if (= *current-keylayout* 'qwerty)
+      (mtgap2)
+    (qwerty)))
 
 (defun anti-qwerty (old new &optional ctrl unsafe)
 
@@ -343,7 +348,7 @@ UNSAFE is non-nil, this binding is suppressed."
 ;;; Hooks.
 ;;;
 
-(defvar qwerty-use-major-mode-hook-p t)
+(defvar qwerty-use-major-mode-hook-p nil)
 
 (add-hook 'after-change-major-mode-hook
           (lambda ()
